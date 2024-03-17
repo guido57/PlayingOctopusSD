@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <audio controls id="ss_static" src = "" type="audio/mp3"></audio>
+      
+    <p id="results"></p>
+
+    <script>
+
+        function myFunction(audio_el){
+            console.log("hello");
+            var x = document.getElementById("ss_static"); 
+            filecode = 70977;
+            x.setAttribute("src", "static/" + filecode + ".mp3");
+                 
+        }
+
+      
+        function playAudio(filecode) { 
+            // ask the server to get the mp3 file    
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/get_mp3?index=' + filecode, true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var sel_codefile = document.getElementById("selected_codefile");
+                    sel_codefile.innerHTML = filecode;    
+
+                    var x = document.getElementById("ss_static"); 
+                    x.setAttribute("src", "static/" + filecode + ".mp3");
+                    x.play(); 
+                }
+            };
+            xhr.send();
+        } 
+
+        function getTracks(filecode){
+             fetch('/tracks?index='+filecode)
+            .then(response => response.json())
+            .then(tracks_json => {
+                tracks_text = ""
+
+                // Iterate through the JSON data
+                for (var i = 0; i < tracks_json.length; i++) {
+                    var track_json = tracks_json[i];
+                    // Collect text from each track 
+                    tracks_text = tracks_text + track_json.track + "/" + track_json.track_name + "   ";
+                }
+
+                this_btn = document.getElementById("bt"+filecode)
+                // append the tracks to the li text as a span
+                const spanItem = document.createElement('span');
+                spanItem.textContent = " tracks: " + tracks_text
+                this_btn.insertAdjacentHTML("afterend",spanItem.outerHTML);
+                this_btn.remove();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function showTracks(filecode){
+            
+            // build a text with all the tracks
+            tracks_json = getTracks(filecode);
+           
+        }
+
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const queryParam = urlParams.get('query');
+
+        const eventSource = new EventSource('/events?query=' + queryParam);
+        const resultsList = document.getElementById('results');
+
+        eventSource.onmessage = function(event) {
+
+            if (event.data === 'END') {
+                eventSource.close();
+                return;
+            }
+            const result = JSON.parse(event.data);
+            //const listItem = document.createElement('li');
+            const inputItem = document.createElement('input');
+            inputItem.id = "radio"+result.ndx
+            inputItem.type = "radio"
+            inputItem.name ="songs"
+            inputItem.setAttribute("onclick", "playAudio(" + result.filecode + ")");
+            //const spanItem = document.createElement('span');
+            const labelItem = document.createElement('label');
+            inputText = result.ndx +" - <b>" + result.artist.replace(/_/g," ") + "</b> - <b>"+ result.song.replace(/_/g," ") +"</b> - filecode: " + result.filecode;
+            resultsList.appendChild(inputItem);
+            //listItem.appendChild(spanItem);
+            labelItem.setAttribute("for","radio"+result.ndx);
+            labelItem.innerHTML = inputText;
+            //inputItem.appendChild(spanItem);
+            resultsList.appendChild(labelItem);
+            //listItem.appendChild(button_play);
+            const button_tracks = document.createElement('button');
+            button_tracks.id = "bt" + result.filecode;
+            button_tracks.setAttribute("onclick", "showTracks(" + result.filecode + ")" );  
+            button_tracks.textContent = 'show tracks'; // Set button text
+            //listItem.appendChild(button_tracks);
+            resultsList.appendChild(button_tracks);
+            //resultsList.appendChild(listItem);
+            resultsList.appendChild(document.createElement("br"));
+            
+        };
+    </script>
+</body>
+</html>
