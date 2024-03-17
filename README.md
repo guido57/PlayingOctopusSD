@@ -17,7 +17,7 @@ The main distinctive capabilities of this building are:
 
 ## Software Architecture
 
-![https://github.com/guido57/PlayingOctopus/blob/main/docs/PlayingOctopusSDblockdiagram.png](https://github.com/guido57/PlayingOctopus/blob/main/docs/PlayingOctopusSDblockdiagram.png)
+![](https://github.com/guido57/PlayingOctopusSD/blob/main/docs/PlayingOctopusSDblockdiagram.png)
 
 ## Octopus web server
 
@@ -57,70 +57,5 @@ The servo motors moving the mallets must be carefully tuned. For each of the six
 
 ### FileSys
 
-![](https://github.com/guido57/PlayingOctopus/blob/main/docs/octopus-filesys.png)
-
-it can be used to set the Octopus Server URL. After running the python flask server on a shell, the program outputs its URL:
-```
-* Serving Flask app 'OctopusServer'
- * Debug mode: on
-WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
- * Running on all addresses (0.0.0.0)
- * Running on http://127.0.0.1:5000
- * Running on http://192.168.1.232:5000
-Press CTRL+C to quit
-```
-You have to copy that URL (e.g. http://192.168.1.232:5000) to the FileSys page and save it.
-
+it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic.
  
-## Python Flask Server
-
-ESP32 is very powerful but its storage memory (flash) is very limited while we need to play mp3 (1 - 4 MBytes) along with midi files, therefore we need an external storage server. See the folder /static where a few mp3 and mid file are already available.
-
-### Hardware and libraries
-
-You can run this python app on a Raspberry PI 3B, 4 or 5 or on any Linux (Ubuntu 22.04 tested). 
-
-You need:
-* Python 3
-* fluidsynth
-```
-sudo apt install fluidsynth
-```
-
-* flask
-```
-pip install Flask
-```
-  
-### Server code
-
-The pages served by the flask python server are directly called and managed by the client (ESP32). Anyway they can be called for testing purposes.
-
-They are:
-
-* /events?query=<word_to_search_separated_by_a_+>   e.g. /search?q=rolling+stones
-  
-  return a list of songs accomplishing the query
-
-  
-* /tracks?index=<codefile>  e.g. /tracks?index=63118
-  
-  return the tracks for that filecode (song id)
-
-
-* /get_mp3?index=<codefile>  e.g. /get_mp3?index=63118
-  
-  convert the mid file (e.g. 63118.mid) to an mp3 file (e.g. 63118.mp3) and store it to the server folder "static"
-
-
-* /output.mp3?query=<codefile>  e.g. /output.mp3?query=63118
-  
-  stream that mp3 file (e.g. 63118.mp3) to the client 
-
-
-* /output.mid?query=<codefile>  e.g. /output.mid?query=63118
-
-  stream that mid file (e.g. 63118.mid) to the client 
-
-
-
