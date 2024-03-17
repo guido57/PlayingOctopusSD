@@ -11,7 +11,8 @@ The main distinctive capabilities of this building are:
 1) It can play 1 selectable track of any MIDI file by the 6 tubular bells
 2) the whole tune (all the MIDI tracks) is played by the loudspeaker
 3) the software, by a web interface, allows to:
-   * search the MIDI file from thousands of songs
+   * search the MIDI file from 63000 songs
+   * add or delete songs
    * select the track to be played by the octopus
    * tune the mallet movements (target, rest, speed)
 
