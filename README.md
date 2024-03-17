@@ -17,7 +17,7 @@ The main distinctive capabilities of this building are:
 
 ## Software Architecture
 
-![https://github.com/guido57/PlayingOctopus/blob/main/docs/PlayingOctopusSD block diagram.png](https://github.com/guido57/PlayingOctopus/blob/main/docs/'PlayingOctopusSD block diagram.png')
+![](https://github.com/guido57/PlayingOctopus/blob/main/docs/PlayingOctopusSDblockdiagram.png)
 
 ## Octopus web server
 
