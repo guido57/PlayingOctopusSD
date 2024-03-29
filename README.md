@@ -11,10 +11,16 @@ The main distinctive capabilities of this building are:
 1) It can play 1 selectable track of any MIDI file by the 6 tubular bells
 2) the whole tune (all the MIDI tracks) is played by the loudspeaker
 3) the software, by a web interface, allows to:
-   * search the MIDI file from 63000 songs
-   * add or delete songs
+   * search the MIDI song to play among about 3900 songs
+   * add or delete songs (TODO)
    * select the track to be played by the octopus
    * tune the mallet movements (target, rest, speed)
+
+## Previous Version
+
+This Repository is an alternative version to https://github.com/guido57/PlayingOctopus where the search, MIDI to MP3 conversion
+ 
+
 
 ## Software Architecture
 
