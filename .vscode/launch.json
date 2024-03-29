@@ -31,8 +31,8 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug",
-            "executable": "/home/guido/Github/PlayingOctopus/.pio/build/esp-wrover-kit/firmware.elf",
-            "projectEnvName": "esp-wrover-kit",
+            "executable": "/home/guido/Github/PlayingOctopusSD/.pio/build/esp32cam/firmware.elf",
+            "projectEnvName": "esp32cam",
             "toolchainBinDir": "/home/guido/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "preLaunchTask": {
@@ -44,8 +44,8 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
-            "executable": "/home/guido/Github/PlayingOctopus/.pio/build/esp-wrover-kit/firmware.elf",
-            "projectEnvName": "esp-wrover-kit",
+            "executable": "/home/guido/Github/PlayingOctopusSD/.pio/build/esp32cam/firmware.elf",
+            "projectEnvName": "esp32cam",
             "toolchainBinDir": "/home/guido/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin",
             "internalConsoleOptions": "openOnSessionStart"
         },
@@ -53,8 +53,8 @@
             "type": "platformio-debug",
             "request": "launch",
             "name": "PIO Debug (without uploading)",
-            "executable": "/home/guido/Github/PlayingOctopus/.pio/build/esp-wrover-kit/firmware.elf",
-            "projectEnvName": "esp-wrover-kit",
+            "executable": "/home/guido/Github/PlayingOctopusSD/.pio/build/esp32cam/firmware.elf",
+            "projectEnvName": "esp32cam",
             "toolchainBinDir": "/home/guido/.platformio/packages/toolchain-xtensa-esp32@8.4.0+2021r2-patch5/bin",
             "internalConsoleOptions": "openOnSessionStart",
             "loadMode": "manual"
