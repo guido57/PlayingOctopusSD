@@ -1,4 +1,4 @@
-#include <SdFat.h>
+#include <File_Mem.h>
 
 
  File_Mem::File_Mem(const unsigned char* _data, int _len) {
@@ -16,14 +16,14 @@ void File_Mem::close() {
 
 // Open a file from SD
 bool File_Mem::open(const String& path, int o_flag){
-    position = 0;
+    pos = 0;
     return true;    
 }
 
 bool File_Mem::open(const unsigned char * buffer, int len){
     data = buffer;
     size = len;
-    position = 0;
+    pos = 0;
     return true;    
 }
 
@@ -55,6 +55,10 @@ int File_Mem::fgets(char* str, int num, char* delim) {
   return n;
 }
 
+int File_Mem::readBytes(void* buf, size_t nbytes){
+  return read(buf, nbytes);
+}
+
 int File_Mem::read(void* buf, size_t nbyte){
     int count = 0;   
     char *p = (char *)buf;
@@ -69,38 +73,29 @@ int File_Mem::read(void* buf, size_t nbyte){
 }
 
 int File_Mem::read(){
-     if (position >= size) {
+     if (pos >= size) {
       return -1; // End of file
     }
-    return data[position++];
+    return data[pos++];
 }
 
 bool File_Mem::seekSet(uint64_t _position) {
     if ( _position >=0 && _position < size) {
-      position = _position;
+      pos = _position;
       return true; // success
     }
     return false; // out of bounds
 }
 
 bool File_Mem::seekCur(uint64_t _relative_position) {
-    return seekSet( position + _relative_position);
+    return seekSet( pos + _relative_position);
+}
+
+uint64_t File_Mem::position() {
+    return pos ;
 }
 
 uint64_t File_Mem::curPosition() {
-    return position ;
+    return pos ;
 }
 
-// ---------------------------------------------------------------------
-
-bool SdFat::chdir(const char* path) {
-    return true;
-}
-bool SdFat::chvol() {
-    return true;
-}
-
-bool SdFat::begin(uint8_t _pp, unsigned int){
-
-    return true; 
-}

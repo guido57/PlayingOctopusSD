@@ -112,7 +112,7 @@ bool MD_MFTrack::getNextEvent(MD_MIDIFile *mf, uint16_t tickCount)
   parseEvent(mf);
 
   // remember the offset for next time
-  _currOffset = mf->_fd.curPosition() - _startOffset;
+  _currOffset = mf->_fd.position() - _startOffset;
 
   // catch end of track when there is no META event  
   _endOfTrack = _endOfTrack || (_currOffset >= _length);
@@ -457,7 +457,7 @@ int MD_MFTrack::load(uint8_t trackId, MD_MIDIFile *mf)
   {
     char    h[MTRK_HDR_SIZE+1]; // Header characters + nul
   
-    mf->_fd.fgets(h, MTRK_HDR_SIZE+1);
+    mf->_fd.readBytes(h, MTRK_HDR_SIZE);
     h[MTRK_HDR_SIZE] = '\0';
 
     if (strcmp(h, MTRK_HDR) != 0){
@@ -471,9 +471,10 @@ int MD_MFTrack::load(uint8_t trackId, MD_MIDIFile *mf)
   // since the track MUST end with an end of track meta event.
   dat32 = readMultiByte(&mf->_fd, MB_LONG);
   _length = dat32;
+  Serial.printf("track = %d  size = %d\r\n",trackId,dat32);
 
   // save where we are in the file as this is the start of offset for this track
-  _startOffset = mf->_fd.curPosition();
+  _startOffset = mf->_fd.position();
   _currOffset = 0;
 
   // Advance the file pointer to the start of the next track;
@@ -483,7 +484,6 @@ int MD_MFTrack::load(uint8_t trackId, MD_MIDIFile *mf)
   return(-1);
 }
 
-#if DUMP_DATA
 void MD_MFTrack::dump(void)
 {
   DUMP("\n[Track ", _trackId);
@@ -493,5 +493,4 @@ void MD_MFTrack::dump(void)
   DUMP("\nEnd of Track:\t\t", _endOfTrack);
   DUMP("\nCurrent buffer offset:\t", _currOffset);
 }
-#endif // DUMP_DATA
 

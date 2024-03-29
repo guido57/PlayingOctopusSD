@@ -383,8 +383,9 @@ http://www.stephenhobley.com/blog/2011/03/14/the-last-darned-midi-interface-ill-
 #define _MDMIDIFILE_H
 
 #include <Arduino.h>
-#include <SdFat.h>
+//#include <SD_MMC.h>
 //#include <FileSPIFF.h>
+#include <File_Mem.h>
 
 /**
  * \file
@@ -455,7 +456,7 @@ http://www.stephenhobley.com/blog/2011/03/14/the-last-darned-midi-interface-ill-
 
 #define ARRAY_SIZE(a) (sizeof(a)/sizeof((a)[0]))
 
-//#define DUMP_DATA 1
+#define DUMP_DATA 0
 
 #if DUMP_DATA
 #define DUMPS(s)    Serial.print(F(s))                            ///< Print a string
@@ -468,9 +469,9 @@ http://www.stephenhobley.com/blog/2011/03/14/the-last-darned-midi-interface-ill-
 #endif // DUMP_DATA
 
 #if SD_FAT_TYPE == 0      // SDFat
-typedef SdFat SDFAT;      ///< SDFat class used
-typedef File_Mem SDDIR;       ///< File type for folders
-typedef File_Mem SDFILE;      ///< File type for files
+//typedef SD_MMC SDFAT;      ///< SDFat class used
+//typedef File_Mem SDDIR;       ///< File type for folders
+//typedef File_Mem SDFILE;      ///< File type for files
 //typedef FileSPIFF SDDIR;       ///< File type for folders
 //typedef FileSPIFF SDFILE;      ///< File type for files
 #elif SD_FAT_TYPE == 1    // FAT16/FAT32
@@ -785,7 +786,7 @@ public:
    * \param psd Pointer to the SDFat object.
    * \return No return data.
    */
-  void begin(SDFAT *psd);
+  void begin( /*FAT *psd */);
 
   //--------------------------------------------------------------
   /** \name Methods for MIDI time base
@@ -983,7 +984,7 @@ public:
    * \param apath pointer to a string with the path name.
    * \return No return data.
    */
-  void setFileFolder(const char* apath) { if (apath != nullptr && _sd->chdir(apath)) _sd->chvol(); }
+  //void setFileFolder(const char* apath) { if (apath != nullptr && _sd->chdir(apath)) _sd->chvol(); }
 
   /** 
    * Load the named SMF
@@ -1247,8 +1248,8 @@ protected:
 
   // file handling
   uint8_t   _selectSD;          ///< SDFat select line
-  SDFAT     *_sd;                ///< SDFat library descriptor supplied by calling program
-  SDFILE    _fd;                ///< SDFat file descriptor
+  //SD_MMC    *_sd;                ///< SDFat library descriptor supplied by calling program
+  File_Mem     _fd;                ///< File_Mem file descriptor
   MD_MFTrack   _track[MIDI_MAX_TRACKS]; ///< the track data for this file
 };
 

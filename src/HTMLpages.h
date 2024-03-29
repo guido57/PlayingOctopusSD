@@ -29,14 +29,8 @@ static const char PAGE_BROWSE[] PROGMEM = R"(
       "posterior": "br"
     },
     {
-      "name": "object",
+      "name": "btn_play",
       "type": "ACElement"
-    },
-    {
-      "name": "play",
-      "type": "ACSubmit",
-      "value": "PLAY",
-      "uri": "/play"
     },
     {
       "name": "selected_codefile",
@@ -69,10 +63,21 @@ static const char PAGE_BROWSE[] PROGMEM = R"(
       "value": "0",
       "label" : "mp3 to mid delay ms"
     },
-   {
+    {
+      "name": "progress_bar",
+      "type": "ACRange",
+      "value": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "magnify": "infront",
+      "label" : "song progress",
+      "style" : "width: 100%"
+    },
+    {
       "name": "embed_list",
       "type": "ACElement"
-   }
+    }
   ]
 }
 )";

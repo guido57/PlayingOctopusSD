@@ -43,7 +43,7 @@ void MD_MIDIFile::initialise(void)
 
   // File handling
   setFilename("");
-  _sd = nullptr;
+  //_sd = nullptr;
 
   // Set MIDI specified standard defaults
   setTicksPerQuarterNote(48); // 48 ticks per quarter note
@@ -72,9 +72,9 @@ MD_MIDIFile::~MD_MIDIFile()
   close();
 }
 
-void MD_MIDIFile::begin(SDFAT *psd)
+void MD_MIDIFile::begin(/*SDFAT *psd*/)
 {
-  _sd = psd;
+  //_sd = psd;
 }
 
 void MD_MIDIFile::close()
@@ -282,6 +282,7 @@ void MD_MIDIFile::processEvents(uint16_t ticks)
 #endif // EVENT/TRACK_PRIORITY
 }
 
+
 int MD_MIDIFile::load(const unsigned char *buffer, int size){ 
 // Load a data memory buffer ready for processing
 // Return one of the E_* error codes
@@ -302,6 +303,7 @@ int MD_MIDIFile::load(const unsigned char *buffer, int size){
  return 0;
 }
 
+
 int MD_MIDIFile::load(const char *fname) 
 // Load the MIDI file into memory ready for processing
 // Return one of the E_* error codes
@@ -315,8 +317,8 @@ int MD_MIDIFile::load(const char *fname)
     return(E_NO_FILE);
 
   // open the file for reading
-  if (!_fd.open(_fileName, O_READ)) 
-  //if (!_fd.open(_fileName, "r") )
+  // if (! (_fd=SD_MMC.open(_fileName, "r"))) 
+  if (!_fd.open(_fileName, O_READ) )
     return(E_NO_OPEN);
 
   // Read the MIDI header
@@ -324,21 +326,25 @@ int MD_MIDIFile::load(const char *fname)
   {
     char    h[MTHD_HDR_SIZE+1]; // Header characters + nul
 
-    _fd.fgets(h, MTHD_HDR_SIZE+1);
+    //_fd.fgets(h, MTHD_HDR_SIZE+1);
+    Serial.printf("load: reading header at position %d\r\n",_fd.position());
+    _fd.readBytes(h, MTHD_HDR_SIZE);
     h[MTHD_HDR_SIZE] = '\0';
 
     if (strcmp(h, MTHD_HDR) != 0)
     {
-      Serial.printf("header error: found %s instead if %s\r\n",h,MTHD_HDR);
+      Serial.printf("header error: found %s instead of %s\r\n",h,MTHD_HDR);
       _fd.close();
       return(E_NOT_MIDI);
     }
   }
 
   // read header size
+  Serial.printf("load: reading header size at position %d\r\n",_fd.position());
   dat32 = readMultiByte(&_fd, MB_LONG);
   if (dat32 != 6)   // must be 6 for this header
   {
+    Serial.printf("load: read header size = %d instead of 6\r\n", dat32);
     _fd.close();
     return(E_HEADER);
   }
@@ -407,7 +413,6 @@ int MD_MIDIFile::load(const char *fname)
 
 }
 
-#if DUMP_DATA
 void MD_MIDIFile::dump(void)
 {
   DUMP("\nFile Name:\t", getFilename());
@@ -426,4 +431,3 @@ void MD_MIDIFile::dump(void)
     DUMPS("\n");
   }
 }
-#endif // DUMP_DATA
