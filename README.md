@@ -1,4 +1,4 @@
-# PlayingOctopus
+# PlayingOctopusSD
  
 ## Overview 
 
@@ -16,11 +16,15 @@ The main distinctive capabilities of this building are:
    * select the track to be played by the octopus
    * tune the mallet movements (target, rest, speed)
 
-## Previous Version
+## PlayingOctopusSD vs PlayinOctopus (Previous Version)
 
-This Repository is an alternative version to https://github.com/guido57/PlayingOctopus where the search, MIDI to MP3 conversion
- 
+This Repository is an alternative version to https://github.com/guido57/PlayingOctopus where:
+* storage,
+* search,
+* MIDI to MP3 conversion
+* MP3 streaming
 
+are obtained by an external python flask server, running for example on a Raspberry PI.
 
 ## Software Architecture
 
