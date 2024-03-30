@@ -68,5 +68,5 @@ The servo motors moving the mallets must be carefully tuned. For each of the six
 
 ### FileSys
 
-it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic.
+it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic (TODO)
  
