@@ -960,7 +960,7 @@ void onPlay(){
   }
   
   selected_track_to_be_played = track_str == "" ? -1 : track_str.toInt();
-  Serial.printf("onPlay(): track_str=%s selected_track_to_be_played=%d\r\n",track_str,  selected_track_to_be_played);
+  //Serial.printf("onPlay(): track_str=%s selected_track_to_be_played=%d\r\n",track_str,  selected_track_to_be_played);
 
 
   if(cmd == "play" && codefile_str != ""){
@@ -974,7 +974,7 @@ void onPlay(){
   writeConfigToFile("/config.json");// save mp3_smf_delay_ms and volume
   
   String resp = "{\"isRunning\":" + String(audio.isRunning()) + ", \"CurrentTime\":" + String(audio.getAudioCurrentTime())  + ",\"FileDuration\":" + String(audio.getAudioFileDuration()) + "}";
-  Serial.printf("onPlay(): %s\r\n", resp.c_str()  );
+  //Serial.printf("onPlay(): %s\r\n", resp.c_str()  );
   server.sendContent(resp);
   return;
 }
@@ -988,6 +988,7 @@ void setup() {
   Serial.println();
   Serial.println("Starting up...\n");
 
+  
   audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
   
   // Start the filesystem
