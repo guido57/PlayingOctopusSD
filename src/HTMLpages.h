@@ -43,11 +43,29 @@ static const char PAGE_BROWSE[] PROGMEM = R"(
       "type": "ACSelect",
       "label": "select a track",
       "option": [
-        "-1","0","1","2","3","4","5","6","7","8","9"
+        "-1","0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"
       ],
       "selected": 1
    },
    {
+      "name": "selected_artist",
+      "type": "ACText",
+      "value": "artist",
+      "posterior": "none"
+    },
+   {
+      "name": "spacing",
+      "type": "ACText",
+      "value": " - ",
+      "posterior": "none"
+    },
+    {
+      "name": "selected_song",
+      "type": "ACText",
+      "value": "song",
+      "posterior": "br"
+    },
+    {
       "name": "select_volume",
       "type": "ACSelect",
       "label": "set the audio volume",
@@ -81,6 +99,61 @@ static const char PAGE_BROWSE[] PROGMEM = R"(
   ]
 }
 )";
+
+
+// HTML Page to upload and delete files in SD
+static const char PAGE_SD[] PROGMEM = R"(
+{
+  "uri": "/sd",
+  "title": "FileSD",
+  "menu": true,
+  "element": [
+    {
+      "name": "upload_file_mid",
+      "type": "ACFile",
+      "label": ".mid file",
+      "store": "sd",
+      "posterior": "br"
+    },
+    {
+      "name": "upload_file_mp3",
+      "type": "ACFile",
+      "label": ".mp3 file",
+      "store": "sd",
+      "posterior": "br"
+    },
+    {
+      "name": "codefile",
+      "label": "Codefile", 
+      "type": "ACInput",
+      "value": ""
+    },
+    {
+      "name": "artist",
+      "label": "Artist", 
+      "type": "ACInput",
+      "value": ""
+    },
+    {
+      "name": "song",
+      "label": "Song", 
+      "type": "ACInput",
+      "value": ""
+    },
+    {
+      "name": "object",
+      "type": "ACElement"
+    },
+    {
+      "name": "status",
+      "type": "ACText",
+      "value": "status"
+    }
+     
+  ]
+}
+)";
+
 
 // HTML Page to list, upload and delete files in SPIFFS
 static const char PAGE_SPIFFS[] PROGMEM = R"(
@@ -306,24 +379,6 @@ static const char SAVE_BELL[] PROGMEM = R"(
   "menu": false,
   "response": false,
   "element": [
-  ]
-}
-)";
-
-
-// HTML Page to play a mid file
-static const char PAGE_PLAY[] PROGMEM = R"(
-{
-  "uri": "/play",
-  "title": "play",
-  "menu": false,
-  "response": false,
-  "element": [
-    {
-      "name": "caption",
-      "type": "ACText",
-      "value": "<h2>play page</h2>"
-    }
   ]
 }
 )";
