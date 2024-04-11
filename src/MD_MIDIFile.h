@@ -595,6 +595,14 @@ public:
    */
   ~MD_MFTrack(void);
 
+  /**
+   * Scan the whole track to find a change program event (0xC0)
+   *
+   *
+   */
+  void getInstrument(MD_MIDIFile *mf);
+  /** @} */
+
   //--------------------------------------------------------------
   /** \name Methods for track file data
    * @{
@@ -1111,6 +1119,15 @@ public:
    */
   void restart(void);
   /** @} */
+
+ /**
+   * \return A string like 12_21_17 with the instrument of each track
+   *
+   *
+   */
+  String getInstruments(void);
+  /** @} */
+
 
   //--------------------------------------------------------------
   /** \name Methods for data handling
