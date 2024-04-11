@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <tbservo.h>
+#include "config.h"
 
     TBServo::TBServo(int pin) {
         // Initialize servo object
