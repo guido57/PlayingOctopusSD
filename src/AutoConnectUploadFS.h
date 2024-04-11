@@ -12,7 +12,7 @@ class AutoConnectUploadFS : public AutoConnectUploadHandler {
   File fsUploadFile;
 
   bool _open(const char* filename, const char* mode) override {
-    Serial.print("handleFileUpload Name: "); Serial.println(filename);
+    Serial.print("handleFileUploadToSD Name: "); Serial.println(filename);
     String fns = String(filename);
     if(fns=="/" || fns=="")
       return false;
