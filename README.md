@@ -70,6 +70,6 @@ it can be used to delete or update or upload .mp3 and .mid files. The index upda
 
 ### FileSD
 
-it can be used to upload new songs (mp3 and mid). The index (azmin.json) is automatic
+it can be used to upload new songs (mp3 and mid). The index (azmin.json) update is automatic
  
 ![](https://github.com/guido57/PlayingOctopusSD/blob/main/docs/Octopus%20FileSD.png)
