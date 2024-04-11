@@ -1,4 +1,4 @@
-# PlayingOctopus
+# PlayingOctopusSD
  
 ## Overview 
 
@@ -11,10 +11,20 @@ The main distinctive capabilities of this building are:
 1) It can play 1 selectable track of any MIDI file by the 6 tubular bells
 2) the whole tune (all the MIDI tracks) is played by the loudspeaker
 3) the software, by a web interface, allows to:
-   * search the MIDI file from 63000 songs
-   * add or delete songs
+   * search the MIDI song to play among about 3900 songs
+   * add or delete songs (TODO)
    * select the track to be played by the octopus
    * tune the mallet movements (target, rest, speed)
+
+## PlayingOctopusSD vs PlayinOctopus (Previous Version)
+
+This Repository is an alternative version to https://github.com/guido57/PlayingOctopus where:
+* storage,
+* search,
+* MIDI to MP3 conversion
+* MP3 streaming
+
+are obtained by an external python flask server, running for example on a Raspberry PI.
 
 ## Software Architecture
 
@@ -58,5 +68,5 @@ The servo motors moving the mallets must be carefully tuned. For each of the six
 
 ### FileSys
 
-it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic.
+it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic (TODO)
  
