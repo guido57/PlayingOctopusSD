@@ -12,9 +12,10 @@ The main distinctive capabilities of this building are:
 2) the whole tune (all the MIDI tracks) is played by the loudspeaker
 3) the software, by a web interface, allows to:
    * search the MIDI song to play among about 3900 songs
-   * add or delete songs (TODO)
+   * add or delete songs with a dedicated web page
    * select the track to be played by the octopus
    * tune the mallet movements (target, rest, speed)
+   * save your favorite configurations (artist-song-track to be played)
 
 ## PlayingOctopusSD vs PlayinOctopus (Previous Version)
 
