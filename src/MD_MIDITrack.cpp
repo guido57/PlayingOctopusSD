@@ -56,6 +56,25 @@ uint32_t MD_MFTrack::getLength(void)
   return _length;
 }
 
+void MD_MFTrack::getInstrument(MD_MIDIFile *mf)
+// track_event = <time:v> + [<midi_event> | <meta_event> | <sysex_event>]
+{
+
+  // move the file pointer to the beginning of the track
+  mf->_fd.seekSet(_startOffset);
+
+  while(_currOffset < _length){
+    // move the file pointer to where we left off
+    mf->_fd.seekSet(_startOffset+_currOffset);
+    // an event always starts with a VarLen  
+    uint32_t deltaT = readVarLen(&mf->_fd);
+    parseEvent(mf);
+    
+    // remember the offset for next time
+    _currOffset = mf->_fd.curPosition() - _startOffset;
+  }
+}
+
 bool MD_MFTrack::getEndOfTrack(void)
 // true if end of track has been reached
 {
