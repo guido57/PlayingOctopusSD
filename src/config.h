@@ -1,5 +1,8 @@
-#ifndef __BELL_STRUCT__
-#define __BELL_STRUCT__
+#include <Arduino.h>
+#include <LittleFS.h>
+
+#ifndef __CONFIG_H__
+#define __CONFIG_H__
 
 
 struct bell_struct {
@@ -19,4 +22,12 @@ struct config_struct {
   char server_url[40];
 };
 
+extern config_struct config;
+extern config_struct config_default;
+
+void writeConfigToFile(const char *filename);
+void readConfigFromFile(const char *filename);
+
+
 #endif
+
