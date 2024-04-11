@@ -39,7 +39,7 @@ Here you are the most distinctive pages.
 
 ### Browse
 
-![](https://github.com/guido57/PlayingOctopus/blob/main/docs/octopus-browse.png)
+![](https://github.com/guido57/PlayingOctopusSD/blob/main/docs/Octopus-Browse.png)
 
 * SEARCH the Internet for all the mid files accomplishing the query. The words must be separated by a +   e.g. parker+charlie
 
