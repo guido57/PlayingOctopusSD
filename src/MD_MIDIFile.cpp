@@ -53,6 +53,8 @@ void MD_MIDIFile::initialise(void)
   setTimeSignature(4, 4);     // 4/4 time
 }
 
+
+
 void MD_MIDIFile::synchTracks(void)
 {
   for (uint8_t i = 0; i < _trackCount; i++)
@@ -226,6 +228,48 @@ boolean MD_MIDIFile::getNextEvent(void)
   return(true);
 }
 
+String instrs[20];
+void mh (midi_event *pev){
+
+    //DEBUG(" M T", pev->track);
+    //DEBUG(":  Ch ", pev->channel+1);
+    //DEBUGS(" Data");
+    //for (uint8_t i=0; i<pev->size; i++)
+    //{
+    //  DEBUGX(" ", pev->data[i]);
+    //}  
+
+    if(pev->data[0] == 0xC0){
+      // it's a program change
+      Serial.printf("Program Change tr=%d ch=%d in=%d\r\n",pev->track, pev->channel+1,pev->data[1]);
+      instrs[pev->track] = pev->data[1]; 
+    } 
+  };
+
+// Scan all the tracks to get the event setting the instrument
+// returns a String like 31_12_0 with the instruments' codes
+String MD_MIDIFile::getInstruments(void)
+{
+  Serial.printf("Scan all the tracks to get the event setting the instrument\r\n");
+  String instrstring;
+  // this callback function will build a string like 17_31_0
+  this->setMidiHandler(mh);
+  
+  for (uint8_t track_ndx=0; track_ndx < _trackCount; track_ndx++){
+    // parse all the tracks
+    _track[track_ndx].getInstrument(this);
+    if(track_ndx >0) instrstring += "_";
+    if(instrs[track_ndx] == "")
+      instrstring += "0";
+    else
+      instrstring += String(instrs[track_ndx]);
+    
+  }
+  
+  return instrstring;
+}
+
+
 void MD_MIDIFile::processEvents(uint16_t ticks)
 {
   uint8_t n;
@@ -282,11 +326,9 @@ void MD_MIDIFile::processEvents(uint16_t ticks)
 #endif // EVENT/TRACK_PRIORITY
 }
 
-
 int MD_MIDIFile::load(const unsigned char *buffer, int size){ 
 // Load a data memory buffer ready for processing
 // Return one of the E_* error codes
-
   
   _fd.open(buffer,size);
   Serial.printf("first 20 chars are\r\n");
@@ -302,7 +344,6 @@ int MD_MIDIFile::load(const unsigned char *buffer, int size){
   
  return 0;
 }
-
 
 int MD_MIDIFile::load(const char *fname) 
 // Load the MIDI file into memory ready for processing
