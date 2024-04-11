@@ -41,10 +41,8 @@ Here you are the most distinctive pages.
 
 ![](https://github.com/guido57/PlayingOctopusSD/blob/main/docs/Octopus-Browse.png)
 
-* SEARCH the Internet for all the mid files accomplishing the query. The words must be separated by a +   e.g. parker+charlie
-
-  The search can be slow!
-
+* SEARCH the local SD (32 GB) for all the mid files accomplishing the query. The words must be separated by a +   e.g. parker+charlie
+  
 * Select a song. Then the song can be listened (on the client browser) by the embedded audio player
 
 * PLAY run the Octopus to play the song (mp3) on its loudspeaker and the selected track bye the tubular bells
@@ -69,4 +67,8 @@ The servo motors moving the mallets must be carefully tuned. For each of the six
 ### FileSys
 
 it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic (TODO)
+
+### FileSD
+
+it can be used to upload new songs (mp3 and mid). The index (azmin.json) is automatic
  
