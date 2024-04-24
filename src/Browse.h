@@ -1,5 +1,4 @@
 
-
 int selected_track_to_be_played = -1;
 
 // download setting 
@@ -27,18 +26,65 @@ bool last_mp3_is_running = false;
 bool last_SMF_is_running = false;
 bool mp3_is_running = false;
 bool SMF_is_running = false;
-unsigned long start_mp3_ms = 0L;
-unsigned long start_SMF_ms = 0L;
+long start_mp3_ms = -1;
+long start_SMF_ms = -1;
 
 MD_MIDIFile * SMF = nullptr;
 
+
+int Mmin, Mmax, Nmin, Nmax, notecount;
+int conv(int M){
+
+  if(notecount == 0){
+    Mmin = Mmax = M;
+    notecount ++;
+    return -1;
+  }else if(notecount == 1){
+    if(M > Mmax){
+      Mmax = M;
+      notecount ++;
+    }else if( M < Mmin){
+      Mmin = M;  
+      notecount ++;
+    }
+    return -1;
+  }else{
+
+    if(M > Mmax) Mmax = M;
+    if(M < Mmin) Mmin = M;
+
+    int N = Nmin*Mmax - Nmax*Mmin + M *(Nmax - Nmin);
+    N = N / ( Mmax - Mmin);
+
+    if(N > Nmax) Nmax = N;
+    if(N < Nmin) Nmin = N;
+  
+    return N;
+  }
+}
+
+void resetMN(){
+  Mmin = -1;
+  Mmax = -1;
+  Nmin = 76;
+  Nmax = 87;
+  notecount = 0;
+}
+
 void cb_play(int note){
   unsigned long milli = millis() - start_mp3_ms;
-  int audio_time = audio.getAudioFileDuration();
-  Serial.printf("\r\n%lu millis  callback with note=%d mp3_current=%d diff=%d\r\n", 
-    milli, note, audio_time, milli - audio_time);
+  int audio_time = audio.getAudioCurrentTime();
   
-  switch(note%12){ // note%12 means that all the notes are remapped between 77 and 87
+  int input = note;
+  note = conv(input);
+  Serial.printf("\r\n%lu millis  callback with note=%d conv to=%d, Mmin=%d Mmax=%d Nmin=%d Nmax=%d \r\n", 
+      milli, input, note, Mmin, Mmax, Nmin, Nmax);
+
+  if(note == -1)
+    return;
+
+  note = note % 12; // note%12 means that all the notes are remapped between 77 and 87
+  switch(note){ // 
     
     case 4:  // 76    76%12 = 4
     case 5:  // 77
@@ -67,11 +113,9 @@ void cb_play(int note){
       break;
     default:
       Serial.printf("No Bell to play note %d\r\n",note);
-
   } 
   //Serial.printf("%lu target to %d\r\n", millis(),target);
 }
-
 
 void midiCallback(midi_event *pev)
 // Called by the MIDIFile library when a file event needs to be processed
@@ -88,8 +132,8 @@ void midiCallback(midi_event *pev)
     Serial.write(pev->data, pev->size);
 #endif
 
-
-  DEBUG("", millis()-start_mp3_ms);
+  long mp3_time = millis()-start_mp3_ms;
+  DEBUG("", mp3_time);
   
   DEBUG(" M T", pev->track);
   DEBUG(":  Ch ", pev->channel+1);
@@ -98,6 +142,9 @@ void midiCallback(midi_event *pev)
   {
     DEBUGX(" ", pev->data[i]);
   }
+  DEBUGS(" mp3 time msecs ");
+  long smf_time = millis() - start_SMF_ms;
+  Serial.printf("%ld diff=%ld",mp3_time, mp3_time - smf_time);
   DEBUG("\r\n","");
 
   if(pev->data[0] == 0x90 && pev->track==selected_track_to_be_played){  // Note On
@@ -186,6 +233,8 @@ void play(String codefile, int track2play, uint8_t dac_gain){
     return;
   }
   
+  resetMN(); // reset conversion parameters for next playing
+
   SMF_is_running = true; // this will start playing on loop()
   DEBUG("\nSMF->getTempo()=", SMF->getTempo());  
   DEBUG("\nSMF->getTicksPerQuarterNote()=", SMF->getTicksPerQuarterNote());  
@@ -198,7 +247,7 @@ void play(String codefile, int track2play, uint8_t dac_gain){
   Serial.printf("Start playing %s\r\n",fn.c_str() );
   
   audio.connecttoFS(SD_MMC, fn.c_str());
-  
+  audio.pauseResume();
   mp3_is_running = true; // start mp3 playing on loop()
 }
 
@@ -207,7 +256,7 @@ void play(String codefile, int track2play, uint8_t dac_gain){
 */
 String postAuxHome(AutoConnectAux& aux, PageArgument& args) {
   
-  //aux.redirect("/browse");
+  aux.redirect("/browse");
   return String();
 }
 
@@ -276,10 +325,7 @@ void onSearchSongs() {
   // Send termination message
   server.sendContent("data: END\n\n");
   server.client().stop();
-  
-}
-
-
+ }
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 void onGetMP3(){ 
   
@@ -408,7 +454,7 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
         }
         codefile = document.getElementById("selected_codefile").value;
         myurl += "&codefile=" + codefile;
-        volume = select_volume.value;
+        volume = progress_bar_volume.value;
         myurl += "&volume=" + volume;
         delay = mp3_smf_delay_ms.value;
         myurl += "&delay=" + delay;
@@ -426,7 +472,7 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
           json_resp = JSON.parse(this.responseText);
           progress_bar.max = json_resp.FileDuration;
           progress_bar.value = json_resp.CurrentTime;
-          document.getElementsByClassName("magnify")[0].innerText = json_resp.CurrentTime + "/" + json_resp.FileDuration;
+          document.getElementsByClassName("magnify")[1].innerText = json_resp.CurrentTime + "/" + json_resp.FileDuration;
 
         }
         xhttp.open("GET", "/status");
@@ -458,7 +504,6 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
                 console.error('Error:', error);
             });
       }
-
 
       function playAudio(filecode) { 
         var sel_codefile = document.getElementById("selected_codefile");
@@ -517,11 +562,15 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
                       selected_codefile.value + " - "  + 
                       select_track.selectedOptions[0].innerText;
         select.add(config);
+        saveConfigs();
       }
 
       function deleteConfig() {
         var select = document.getElementById("configs");
-        select.remove(select.selectedIndex);
+        if(confirm("Are you sure you want to permanently delete: \"" + select.selectedOptions[0].innerText + "\" ???" )){
+          select.remove(select.selectedIndex);
+          saveConfigs();
+        }
       }
 
       function saveConfigs() {
@@ -540,6 +589,11 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
         select_track.selectedIndex = parseInt(fields[3].trim()) + 1
       }
 
+      document.addEventListener("DOMContentLoaded", (event) => {
+        //alert("DOM fully loaded and parsed");
+        configs_click();
+      });
+      
     </script>
     
     <br/>
@@ -547,8 +601,8 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
     <select id='configs' onClick='configs_click()'>
       %CONFIGS%
     </select>
-    <input type='button' onclick='addConfig(); saveConfigs()' value='Add'/>
-    <input type='button' onclick='deleteConfig(); saveConfigs()' value='Del'/>
+    <input type='button' onclick='addConfig()' value='Add'/>
+    <input type='button' onclick='deleteConfig()' value='Del'/>
     <br/>
     <audio controls id="ss_static" src = "" type="audio/mp3"></audio>
     <br/>
@@ -574,8 +628,10 @@ String onPostBrowse(AutoConnectAux& aux, PageArgument& args) {
   String html_embed_list_str = String(html_embed_list);
   html_embed_list_str.replace("%CONFIGS%", configsFileContent);
   
-  AutoConnectSelect& volume = aux["select_volume"].as<AutoConnectSelect>();
-  volume.selected = config.volume +1;
+  //AutoConnectSelect& volume = aux["select_volume"].as<AutoConnectSelect>();
+  //volume.selected = config.volume +1;
+  AutoConnectRange& volume = aux["progress_bar_volume"].as<AutoConnectRange>();
+  volume.value = config.volume ;
   
   AutoConnectInput& mp3_smf_delay_ms = aux["mp3_smf_delay_ms"].as<AutoConnectInput>();
   mp3_smf_delay_ms.value = String(config.mp3_to_smf_delay_ms);
