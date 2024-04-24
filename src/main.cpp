@@ -98,8 +98,6 @@ void setup() {
   auxFileSys.onUpload(uploader);
   auxFileSD.load(PAGE_SD);
   auxFileSD.on(postFileSD);
-  //auxPlay.load(PAGE_PLAY);
-  //auxPlay.on(postAuxPlay);    
   auxDelete.load(PAGE_DELETE);
   auxDelete.on(postAuxDelete);      
   auxSaveServerUrl.load(PAGE_SAVE_SERVER_URL);
@@ -142,10 +140,17 @@ void loop()
 
   // ------------------------------------------
   // Start and Stop MP3
+  // MP3 starts after MIDI when config.mp3_to_smf_delay_ms < 0
   // ------------------------------------------
-  if( mp3_is_running && !last_mp3_is_running){
+  if(      mp3_is_running 
+        && !last_mp3_is_running 
+        && (     config.mp3_to_smf_delay_ms >=0 
+             || (start_SMF_ms != -1 && millis() > start_SMF_ms - config.mp3_to_smf_delay_ms )
+            )
+    ){
     start_mp3_ms = millis();
-    Serial.printf("MP3 audio started at %lu\r\n",start_mp3_ms);
+    Serial.printf("MP3 audio started at %lu start_SMF_ms=%lu\r\n",start_mp3_ms, start_SMF_ms);
+    audio.pauseResume();
     if(audio.isRunning() == false){
       Serial.printf("loop: audio didn't start.\r\n");
     }
@@ -155,20 +160,29 @@ void loop()
     audio.stopSong();
     Serial.printf("mp3 audio stopped at %lu\r\n",millis());
     last_mp3_is_running = false;
+    start_mp3_ms = -1;
   }
   // ------------------------------------------
   // Start and Stop SMF (MIDI)
+  //  MIDI starts after MP3 when config.mp3_to_smf_delay_ms >= 0
   // ------------------------------------------
-  if(SMF!=nullptr && SMF_is_running && !last_SMF_is_running && millis() > start_mp3_ms + config.mp3_to_smf_delay_ms){
+  if(    SMF!=nullptr 
+      && SMF_is_running 
+      && !last_SMF_is_running 
+      && (    config.mp3_to_smf_delay_ms < 0 
+           || (start_mp3_ms != -1 && (millis() > start_mp3_ms + config.mp3_to_smf_delay_ms))
+         )
+    ){
     SMF->pause(false);        // this starts playing
     start_SMF_ms = millis();
-    Serial.printf("SMF audio started at %lu  SMF_delay_ms=%lu\r\n", 
-          start_SMF_ms, config.mp3_to_smf_delay_ms);
+    Serial.printf("SMF audio started at %lu  SMF_delay_ms=%d start_mp3_ms=%lu\r\n", 
+          start_SMF_ms, config.mp3_to_smf_delay_ms, start_mp3_ms);
     last_SMF_is_running = true;
   }else if(SMF!=nullptr && !SMF_is_running && last_SMF_is_running){
     SMF->pause(true); // this stops playing
     Serial.printf("SMF audio stopped at %lu\r\n",millis());
     last_SMF_is_running = false;
+    start_SMF_ms = -1;
   }
   
   // loop play the MIDI file
