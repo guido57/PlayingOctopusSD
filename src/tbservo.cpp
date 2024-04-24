@@ -4,32 +4,35 @@
 
     TBServo::TBServo(int pin) {
         // Initialize servo object
-        targetPosition = 0;
-        lastMoveTime = 0;
-        servo = new Servo();
-        servo->attach(pin, 500, 2500); // attaches the servo on pin 18 to the servo object
-	    servo->setPeriodHertz(200);    // standard 50 hz servo
-        
+            targetPosition = 0;
+            lastMoveTime = 0;
+            servo = new Servo();
+            servo->attach(pin, 500, 2500); // attaches the servo on "pin" to the servo object
+            servo->setPeriodHertz(200);    // standard 50 hz servo
+     
 	}
-
     void TBServo::targetTo(int target_position, int rest_position, int target_delay, int rest_delay) {
-        targetPosition = target_position;
-        restPosition = rest_position;
-        targetDelay = target_delay;
-        restDelay = rest_delay;
-        servo->write(targetPosition);         // move to the target position
-        lastMoveTime = millis();
-        tbservostatus = tb_target;
+        if(tbservostatus != tb_target){
+            targetPosition = target_position;
+            restPosition = rest_position;
+            targetDelay = target_delay;
+            restDelay = rest_delay;
+            servo->write(targetPosition);         // move to the target position
+            lastMoveTime = millis();
+            tbservostatus = tb_target;
+        }
     }
 
     void TBServo::targetTo(bell_struct * bs) {
-        targetPosition = bs->target;
-        restPosition = bs->rest;
-        targetDelay = bs->target_time_ms;
-        restDelay = bs->rest_time_ms;
-        servo->write(targetPosition);         // move to the target position
-        lastMoveTime = millis();
-        tbservostatus = tb_target;
+        if(tbservostatus != tb_target){
+            targetPosition = bs->target;
+            restPosition = bs->rest;
+            targetDelay = bs->target_time_ms;
+            restDelay = bs->rest_time_ms;
+            servo->write(targetPosition);         // move to the target position
+            lastMoveTime = millis();
+            tbservostatus = tb_target;
+        }
     }
 
 
