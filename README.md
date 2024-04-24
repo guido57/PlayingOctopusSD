@@ -12,9 +12,10 @@ The main distinctive capabilities of this building are:
 2) the whole tune (all the MIDI tracks) is played by the loudspeaker
 3) the software, by a web interface, allows to:
    * search the MIDI song to play among about 3900 songs
-   * add or delete songs (TODO)
+   * add or delete songs with a dedicated web page
    * select the track to be played by the octopus
    * tune the mallet movements (target, rest, speed)
+   * save your favorite configurations (artist-song-track to be played)
 
 ## PlayingOctopusSD vs PlayinOctopus (Previous Version)
 
@@ -39,12 +40,10 @@ Here you are the most distinctive pages.
 
 ### Browse
 
-![](https://github.com/guido57/PlayingOctopus/blob/main/docs/octopus-browse.png)
+![](https://github.com/guido57/PlayingOctopusSD/blob/main/docs/Octopus-Browse.png)
 
-* SEARCH the Internet for all the mid files accomplishing the query. The words must be separated by a +   e.g. parker+charlie
-
-  The search can be slow!
-
+* SEARCH the local SD (32 GB) for all the mid files accomplishing the query. The words must be separated by a +   e.g. parker+charlie
+  
 * Select a song. Then the song can be listened (on the client browser) by the embedded audio player
 
 * PLAY run the Octopus to play the song (mp3) on its loudspeaker and the selected track bye the tubular bells
@@ -69,4 +68,9 @@ The servo motors moving the mallets must be carefully tuned. For each of the six
 ### FileSys
 
 it can be used to delete or update or upload .mp3 and .mid files. The index update is automatic (TODO)
+
+### FileSD
+
+it can be used to upload new songs (mp3 and mid). The index (azmin.json) update is automatic
  
+![](https://github.com/guido57/PlayingOctopusSD/blob/main/docs/Octopus%20FileSD.png)
