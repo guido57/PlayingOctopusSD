@@ -66,16 +66,17 @@ static const char PAGE_BROWSE[] PROGMEM = R"(
       "posterior": "br"
     },
     {
-      "name": "select_volume",
-      "type": "ACSelect",
-      "label": "set the audio volume",
-      "option": [
-        "0","1","2","3","4","5","6","7","8","9","10",
-        "11","12","13","14","15","16","17","18","19","20"
-      ],
-      "selected": 5
-   }, 
-   {
+      "name": "progress_bar_volume",
+      "type": "ACRange",
+      "value": 5,
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "magnify": "behind",
+      "label" : "set the audio volume ",
+      "style" : "width: 70%"
+    },
+    {
       "name": "mp3_smf_delay_ms",
       "type": "ACInput",
       "value": "0",
@@ -88,9 +89,9 @@ static const char PAGE_BROWSE[] PROGMEM = R"(
       "min": 0,
       "max": 100,
       "step": 1,
-      "magnify": "infront",
+      "magnify": "behind",
       "label" : "song progress",
-      "style" : "width: 100%"
+      "style" : "width: 70%"
     },
     {
       "name": "embed_list",
